@@ -164,6 +164,8 @@ public:
         previous_error = error;
     
         motor = (Kp * error) + (Ki * integral) + (Kd * derivative);
+
+        
     
         if (motor > out_max) {
             motor = out_max;
@@ -172,6 +174,12 @@ public:
         if (motor < out_min) {
             motor = out_min;
             integral = integral - (error * pid_dt);
+        }
+
+        if ( target > 0) {  //prevent - output if target is +
+          motor = std::max( 0.0, motor);
+        } else if ( target < 0 ) { //and prevent + input if target is -
+          motor = std::min( motor, 0.0); 
         }
       
         if (target == 0) {
